@@ -36,20 +36,32 @@ ActiveRecord::Schema.define(version: 20150801011225) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "install_groups", force: :cascade do |t|
+    t.string   "comment"
+    t.integer  "host_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "install_groups", ["host_id"], name: "index_install_groups_on_host_id", using: :btree
+
   create_table "installs", force: :cascade do |t|
     t.integer  "host_id"
     t.integer  "package_id"
     t.integer  "repository_id"
+    t.integer  "install_group_id"
     t.string   "version"
     t.string   "title"
+    t.string   "installer"
     t.datetime "installed_at"
     t.datetime "uninstalled_at"
     t.hstore   "params"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
   add_index "installs", ["host_id"], name: "index_installs_on_host_id", using: :btree
+  add_index "installs", ["install_group_id"], name: "index_installs_on_install_group_id", using: :btree
   add_index "installs", ["package_id"], name: "index_installs_on_package_id", using: :btree
   add_index "installs", ["repository_id"], name: "index_installs_on_repository_id", using: :btree
 
@@ -70,7 +82,9 @@ ActiveRecord::Schema.define(version: 20150801011225) do
 
   add_foreign_key "host_repositories", "hosts"
   add_foreign_key "host_repositories", "repositories"
+  add_foreign_key "install_groups", "hosts"
   add_foreign_key "installs", "hosts"
+  add_foreign_key "installs", "install_groups"
   add_foreign_key "installs", "packages"
   add_foreign_key "installs", "repositories"
 end
