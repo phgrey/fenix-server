@@ -4,12 +4,10 @@ class CreateInstalls < ActiveRecord::Migration
       t.references :host, index: true, foreign_key: true
       t.references :package, index: true, foreign_key: true
       t.references :repository, index: true, foreign_key: true
-      t.references :install_group, index: true, foreign_key: true
-      t.string :version
-      t.string :title
+      t.references :event, index: true, foreign_key: true
+      t.string :title, index: true
       t.string :installer
-      t.timestamp :installed_at
-      t.timestamp :uninstalled_at
+      t.boolean :removed
       t.hstore :params
       t.timestamps null: false
     end

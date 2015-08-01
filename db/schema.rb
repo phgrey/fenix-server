@@ -17,16 +17,15 @@ ActiveRecord::Schema.define(version: 20150801011225) do
   enable_extension "plpgsql"
   enable_extension "hstore"
 
-  create_table "host_repositories", force: :cascade do |t|
+  create_table "events", force: :cascade do |t|
+    t.string   "comment"
     t.integer  "host_id"
-    t.integer  "repository_id"
-    t.boolean  "active"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.hstore   "params"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  add_index "host_repositories", ["host_id"], name: "index_host_repositories_on_host_id", using: :btree
-  add_index "host_repositories", ["repository_id"], name: "index_host_repositories_on_repository_id", using: :btree
+  add_index "events", ["host_id"], name: "index_events_on_host_id", using: :btree
 
   create_table "hosts", force: :cascade do |t|
     t.string   "key"
@@ -36,34 +35,24 @@ ActiveRecord::Schema.define(version: 20150801011225) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "install_groups", force: :cascade do |t|
-    t.string   "comment"
-    t.integer  "host_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "install_groups", ["host_id"], name: "index_install_groups_on_host_id", using: :btree
-
   create_table "installs", force: :cascade do |t|
     t.integer  "host_id"
     t.integer  "package_id"
     t.integer  "repository_id"
-    t.integer  "install_group_id"
-    t.string   "version"
+    t.integer  "event_id"
     t.string   "title"
     t.string   "installer"
-    t.datetime "installed_at"
-    t.datetime "uninstalled_at"
+    t.boolean  "removed"
     t.hstore   "params"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
+  add_index "installs", ["event_id"], name: "index_installs_on_event_id", using: :btree
   add_index "installs", ["host_id"], name: "index_installs_on_host_id", using: :btree
-  add_index "installs", ["install_group_id"], name: "index_installs_on_install_group_id", using: :btree
   add_index "installs", ["package_id"], name: "index_installs_on_package_id", using: :btree
   add_index "installs", ["repository_id"], name: "index_installs_on_repository_id", using: :btree
+  add_index "installs", ["title"], name: "index_installs_on_title", using: :btree
 
   create_table "packages", force: :cascade do |t|
     t.string   "title"
@@ -80,11 +69,23 @@ ActiveRecord::Schema.define(version: 20150801011225) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "host_repositories", "hosts"
-  add_foreign_key "host_repositories", "repositories"
-  add_foreign_key "install_groups", "hosts"
+  create_table "sources", force: :cascade do |t|
+    t.integer  "host_id"
+    t.integer  "repository_id"
+    t.integer  "unseen",        default: 0
+    t.datetime "seen_at"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "sources", ["host_id"], name: "index_sources_on_host_id", using: :btree
+  add_index "sources", ["repository_id"], name: "index_sources_on_repository_id", using: :btree
+
+  add_foreign_key "events", "hosts"
+  add_foreign_key "installs", "events"
   add_foreign_key "installs", "hosts"
-  add_foreign_key "installs", "install_groups"
   add_foreign_key "installs", "packages"
   add_foreign_key "installs", "repositories"
+  add_foreign_key "sources", "hosts"
+  add_foreign_key "sources", "repositories"
 end
