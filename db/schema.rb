@@ -29,14 +29,12 @@ ActiveRecord::Schema.define(version: 20150801011225) do
   add_index "host_repositories", ["repository_id"], name: "index_host_repositories_on_repository_id", using: :btree
 
   create_table "hosts", force: :cascade do |t|
-    t.string   "hash"
+    t.string   "key"
     t.string   "title"
     t.hstore   "params"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
-
-  add_index "hosts", ["hash"], name: "index_hosts_on_hash", unique: true, using: :btree
 
   create_table "installs", force: :cascade do |t|
     t.integer  "host_id"
