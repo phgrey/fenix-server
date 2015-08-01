@@ -11,14 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150724171501) do
+ActiveRecord::Schema.define(version: 20150801011225) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
 
+  create_table "host_repositories", force: :cascade do |t|
+    t.integer  "host_id"
+    t.integer  "repository_id"
+    t.boolean  "active"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "host_repositories", ["host_id"], name: "index_host_repositories_on_host_id", using: :btree
+  add_index "host_repositories", ["repository_id"], name: "index_host_repositories_on_repository_id", using: :btree
+
   create_table "hosts", force: :cascade do |t|
     t.string   "hash"
+    t.string   "title"
     t.hstore   "params"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -28,15 +40,39 @@ ActiveRecord::Schema.define(version: 20150724171501) do
 
   create_table "installs", force: :cascade do |t|
     t.integer  "host_id"
-    t.string   "package"
+    t.integer  "package_id"
+    t.integer  "repository_id"
+    t.string   "version"
+    t.string   "title"
     t.datetime "installed_at"
     t.datetime "uninstalled_at"
+    t.hstore   "params"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
   end
 
   add_index "installs", ["host_id"], name: "index_installs_on_host_id", using: :btree
-  add_index "installs", ["package"], name: "index_installs_on_package", using: :btree
+  add_index "installs", ["package_id"], name: "index_installs_on_package_id", using: :btree
+  add_index "installs", ["repository_id"], name: "index_installs_on_repository_id", using: :btree
 
+  create_table "packages", force: :cascade do |t|
+    t.string   "title"
+    t.hstore   "params"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "repositories", force: :cascade do |t|
+    t.string   "url"
+    t.string   "type"
+    t.hstore   "params"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "host_repositories", "hosts"
+  add_foreign_key "host_repositories", "repositories"
   add_foreign_key "installs", "hosts"
+  add_foreign_key "installs", "packages"
+  add_foreign_key "installs", "repositories"
 end

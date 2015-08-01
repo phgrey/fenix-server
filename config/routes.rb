@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
-  resources :installs
-  resources :hosts
+  resources :host_repositories
+  resources :installs, :defaults => { :format => :json }
+  resources :hosts, :defaults => { :format => :json }
+  root 'status#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
