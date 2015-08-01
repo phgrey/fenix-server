@@ -7,5 +7,6 @@ class CreateSources < ActiveRecord::Migration
       t.timestamp :seen_at
       t.timestamps null: false
     end
+    add_index :sources, [:host_id, :repository_id], unique: true
   end
 end

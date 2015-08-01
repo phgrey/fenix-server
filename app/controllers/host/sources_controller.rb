@@ -2,7 +2,7 @@ class Host::SourcesController < Host::BaseController
   # GET /sources/1
   # GET /sources/1.json
   def show
-
+    @sources = @host.sources().join(:repositories)
   end
 
 
@@ -15,8 +15,9 @@ class Host::SourcesController < Host::BaseController
   # PATCH/PUT /sources/1
   # PATCH/PUT /sources/1.json
   def update
+    sources = Flattener.sources params[:sources]
     respond_to do |format|
-      if @source.update(host_repository_params)
+      if @host.set_sources sources
         format.html { redirect_to source, notice: 'SourceList was successfully updated.' }
         format.json { render :show, status: :ok, location: source }
       else
@@ -27,14 +28,5 @@ class Host::SourcesController < Host::BaseController
   end
 
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_host_repository
-      @source = Source.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def host_repository_params
-      params.require(:source).permit(:host_id, :repository_id, :active)
-    end
 end

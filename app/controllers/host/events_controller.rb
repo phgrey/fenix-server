@@ -29,7 +29,7 @@ class Host::EventsController < Host::BaseController
     data = params[:event]
     @event = Event.new Flattener.event data
 
-    saved = Install.install Flattener.installs(data), @host, @event
+    saved = @host.install Flattener.installs(data), @event
 
     respond_to do |format|
       if saved

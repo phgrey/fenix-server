@@ -20,9 +20,10 @@ ActiveRecord::Schema.define(version: 20150801011225) do
   create_table "events", force: :cascade do |t|
     t.string   "comment"
     t.integer  "host_id"
+    t.string   "installer",  limit: 10
     t.hstore   "params"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
   end
 
   add_index "events", ["host_id"], name: "index_events_on_host_id", using: :btree
@@ -69,6 +70,9 @@ ActiveRecord::Schema.define(version: 20150801011225) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "repositories", ["url", "installer"], name: "index_repositories_on_url_and_installer", unique: true, using: :btree
+  add_index "repositories", ["url"], name: "index_repositories_on_url", using: :btree
+
   create_table "sources", force: :cascade do |t|
     t.integer  "host_id"
     t.integer  "repository_id"
@@ -78,6 +82,7 @@ ActiveRecord::Schema.define(version: 20150801011225) do
     t.datetime "updated_at",                null: false
   end
 
+  add_index "sources", ["host_id", "repository_id"], name: "index_sources_on_host_id_and_repository_id", unique: true, using: :btree
   add_index "sources", ["host_id"], name: "index_sources_on_host_id", using: :btree
   add_index "sources", ["repository_id"], name: "index_sources_on_repository_id", using: :btree
 

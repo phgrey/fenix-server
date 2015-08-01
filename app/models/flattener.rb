@@ -1,6 +1,5 @@
 class Flattener
   class << self
-    #params: installs_count,
     def event(data)
       _copy_fields(data, ['comment', 'installer', 'params'])
     end
@@ -9,12 +8,19 @@ class Flattener
       data['installs'].map{|i|_install i}
     end
 
+    def sources(data)
+      data['sources'].map{|i|_source i}
+    end
+
     protected
-    #params: repository_url, package_version, package_name, instead_of(title),
     def _install(data)
       _copy_fields data, ['title', 'removed', 'params', 'package_id', 'repository_id']
     end
 
+    def _source(data)
+      _copy_fields data, ['url', 'installer']
+      # _copy_fields data, ['repository_id', 'url', 'installer']
+    end
 
     def _copy_fields(from, fields)
       Hash[fields.filter{|i|from.has_key?(i) && !from[i].nil?}.map{|i|[i, from[i]]}]
