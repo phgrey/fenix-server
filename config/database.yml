@@ -23,6 +23,9 @@ default: &default
   username: phgrey
   password: streampass12
 
+client:
+  adapter: sqlite3
+  database: db/fenix.sqlite3
 
 development:
   <<: *default
