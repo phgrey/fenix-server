@@ -1,2 +1,2 @@
-class Package < ActiveRecord::Base
+class Package < Fenix::Store::Package
 end

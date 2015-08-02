@@ -31,5 +31,8 @@ module FenixServer
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+
+    # http://stackoverflow.com/questions/3888570/how-to-configure-an-extra-different-migrations-folder
+    # config.path['db/migrate'] += [Bundler::CLI::Common.select_spec('fenix-store').full_gem_path]
   end
 end

@@ -15,7 +15,7 @@ class Host::SourcesController < Host::BaseController
   # PATCH/PUT /sources/1
   # PATCH/PUT /sources/1.json
   def update
-    sources = Flattener.sources params[:sources]
+    sources = Fenix::Store::Converter::Flattener.sources params[:sources]
     respond_to do |format|
       if @host.set_sources sources
         format.html { redirect_to source, notice: 'SourceList was successfully updated.' }

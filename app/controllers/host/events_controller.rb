@@ -27,9 +27,9 @@ class Host::EventsController < Host::BaseController
   # POST /events.json
   def create
     data = params[:event]
-    @event = Event.new Flattener.event data
+    @event = Event.new Fenix::Store::Converter::Flattener.event data
 
-    saved = @host.install Flattener.installs(data), @event
+    saved = @host.install Fenix::Store::Converter::Flattener.installs(data), @event
 
     respond_to do |format|
       if saved
@@ -46,7 +46,7 @@ class Host::EventsController < Host::BaseController
   # PATCH/PUT /events/1.json
   def update
     respond_to do |format|
-      if @event.update Flattener.event params[:event]
+      if @event.update Fenix::Store::Converter::Flattener.event params[:event]
         format.html { redirect_to @event, notice: 'Event was successfully updated.' }
         format.json { render :show, status: :ok, location: @event }
       else

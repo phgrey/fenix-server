@@ -1,13 +1,2 @@
-class Install < ActiveRecord::Base
-  belongs_to :host
-  belongs_to :package
-  belongs_to :repository
-  belongs_to :event
-
-  #params: repository_url, package_version, package_name, instead_of(title),
-
-
-
-
-
+class Install < Fenix::Store::Install
 end
