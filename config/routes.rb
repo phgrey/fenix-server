@@ -1,11 +1,13 @@
 Rails.application.routes.draw do
 
   #here we do play with our API, so it's JSON
-  defaults format: :json do
+  #in new version of apis we can use host2 and so on path prefix
+  #or even just use get-parameter v
+  defaults format: :json, v: 0 do
     resource :host
     namespace :host do
-      resources :events, except:['destroy']#, module: 'host'
-      resource :sources, only:['show','edit','update']#, module: 'host'
+      resources :events, except:['destroy']
+      resource :sources, only:['show','edit','update']
     end
   end
   root 'status#index'
