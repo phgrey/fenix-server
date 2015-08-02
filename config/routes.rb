@@ -1,8 +1,12 @@
 Rails.application.routes.draw do
 
-  resources :hosts, :defaults => { :format => :json } do
-    resources :events, except:['destroy']
-    resource :sources, only:['show','edit','update']
+  #here we do play with our API, so it's JSON
+  defaults format: :json do
+    resource :host
+    namespace :host do
+      resources :events, except:['destroy']#, module: 'host'
+      resource :sources, only:['show','edit','update']#, module: 'host'
+    end
   end
   root 'status#index'
   # The priority is based upon order of creation: first created -> highest priority.
